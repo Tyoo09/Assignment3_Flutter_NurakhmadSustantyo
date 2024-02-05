@@ -1,25 +1,18 @@
-import 'package:assignment3_flutter/models/post_models.dart';
+import 'package:assignment3_flutter/models/user_models.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/post_providers.dart';
-import '../widgets/post_widgets.dart';
+import '../providers/user_providers.dart';
+import '../widgets/user_widgets.dart';
 
-class PostOverviewScreen extends StatefulWidget {
-  const PostOverviewScreen({Key? key}) : super(key: key);
-
-  @override
-  _PostOverviewScreenState createState() => _PostOverviewScreenState();
-}
-
-class _PostOverviewScreenState extends State<PostOverviewScreen> {
-  int _currentIndex = 0;
+class UserOverviewScreen extends StatelessWidget {
+  const UserOverviewScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Post',
+          'User',
           style: const TextStyle(
             color: Colors.white,
           ),
@@ -27,24 +20,29 @@ class _PostOverviewScreenState extends State<PostOverviewScreen> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: FutureBuilder(
-        future: Provider.of<PostProvider>(context).getPostData(),
+        future: Provider.of<UserProvider>(context).getUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (snapshot.data == null) {
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
             return Center(child: Text("No data available"));
           } else {
-            List<PostModels> posts = snapshot.data!;
+            List<UserModels> users = snapshot.data!;
             return ListView.builder(
-              itemCount: posts.length,
+              itemCount: users.length,
               itemBuilder: (context, index) {
-                return PostCard(
-                  userId: posts[index].userId!,
-                  id: posts[index].id!,
-                  title: posts[index].title!,
-                  body: posts[index].body!,
+                final user = users[index];
+                return UserCard(
+                  id: user.id!,
+                  name: user.name!,
+                  username: user.username!,
+                  email: user.email!,
+                  address: user.address!,
+                  phone: user.phone!,
+                  website: user.website!,
+                  company: user.company!,
                 );
               },
             );

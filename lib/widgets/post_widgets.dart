@@ -42,7 +42,7 @@ class PostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      title,
+                      title ?? 'No Title',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
@@ -50,7 +50,7 @@ class PostCard extends StatelessWidget {
                     ),
                     const Padding(padding: EdgeInsets.symmetric(vertical: 2)),
                     Text(
-                      body,
+                      body ?? 'No Body',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 15,

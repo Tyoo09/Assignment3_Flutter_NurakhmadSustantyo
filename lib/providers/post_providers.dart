@@ -3,35 +3,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class PostProvider with ChangeNotifier {
-  List<PostModels> _posts = <PostModels>[];
+class PostProvider with ChangeNotifier{
 
-  final url = Uri.parse('https://jsonplaceholder.typicode.com/posts');
-
-  List<PostModels> get posts {
-    return [..._posts];
-  }
-
-  Future<void> fetchAndSetPost() async {
+  Future<List<PostModels>> getPostData() async {
     try {
-      final resp = await http.get(url);
-      final extractedData = json.decode(resp.body);
-      List<PostModels> loadedDatas = [];
+      final resp = await http.get(
+        Uri.parse('https://jsonplaceholder.typicode.com/posts'),
+      );
 
-      extractedData['posts'].forEach((post) {
-        final currentData = PostModels(
-          userId: int.parse(post['userId'].toString()),
-          id: int.parse(post['id'].toString()),
-          title: post['title'].toString(),
-          body: post['body'].toString(),
-        );
-        loadedDatas.add(currentData);
-      });
-
-      _posts = loadedDatas;
+      if (resp.statusCode == 200) {
+        final list = json.decode(resp.body) as List<dynamic>;
+        return list.map((index) => PostModels.fromJson(index)).toList();
+      } else {
+        throw Exception('Failed to load posts - ${resp.statusCode}');
+      }
     } catch (err) {
-      print("test $err");
-      rethrow;
+      throw Exception('Failed to load posts: $err');
     }
   }
 }
